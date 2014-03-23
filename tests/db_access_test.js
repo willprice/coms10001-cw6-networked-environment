@@ -1,8 +1,8 @@
 "use_strict";
 
 var sqlite3 = require("sqlite3");
-var db_access = require('./../src/db_access');
 
+var db_access = require('./../src/db_access');
 module.exports = {
   setUp: function(callback) {
     this.db = new sqlite3.Database('test.db');
@@ -18,11 +18,11 @@ module.exports = {
     var file_type = 'pos';
     var error_type ='positions';
     test.throws(
-        db_access.getFile(files_id, error_type, 
+        db_access.getFile(files_id, error_type,
           function(err) {
             if (err) { throw err; }
             test.done();
-          }), 
+          }),
         error_type);
   },
 
@@ -30,9 +30,9 @@ module.exports = {
     var files_id = 1;
     var file_type = 'pos';
     db_access.getFile(files_id, file_type, function(err, data) {
-      if(err) { 
+      if(err) {
         test.done();
-        throw err; 
+        throw err;
       }
       test.equal(data.split("\n", 10));
       test.done();
