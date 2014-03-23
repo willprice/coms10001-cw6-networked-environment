@@ -201,18 +201,18 @@ function onJoin(client, args)
 // depending on the type of data (text or binary)
 function onGet(client, args)
 {
-	if(args.item == "game")
-	{
-	   	game_state_init.getWholeGameState(args.session_id, function(data){
-			sendText(data);
-		});
+    if(args.item === "game")
+    {
+        game_state_init.getWholeGameState(args.session_id, function(data){
+            sendText(data);
+        });
 	}
 	else
 	{
 		db_access.getFile(args.files_id, args.item, function(err, dump) {
 			if(err) throw err;
-			if(args.item == "map") sendBinary(dump);
-			else sendText(dump);	
+			if(args.item === "map") sendBinary(dump);
+			else sendText(dump);
 			return;
 		});
 	}
@@ -280,3 +280,4 @@ function onInvalid(client, err)
 {
 	client.write("0," + err.code + "," + err.message + "\n");
 }
+

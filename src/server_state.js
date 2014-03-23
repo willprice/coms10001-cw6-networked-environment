@@ -43,7 +43,7 @@ ServerState.prototype.reset = function()
 	this.state = this.IDLE;
 	this.files_id = 0;
 	this.session_id = 0;
-}
+};
 
 /**
  * Prints out the current state of the game
@@ -51,7 +51,7 @@ ServerState.prototype.reset = function()
 ServerState.prototype.printState = function()
 {
 	console.log("State: " + this.state);
-}
+};
 
 /**
  * main function for processing incoming requests from the clients. All
@@ -71,7 +71,7 @@ ServerState.prototype.processRequest = function(client,request)
 
 	// check the request against the stae of the game to check
 	// if it is valid
-	if(request.length == 0)
+	if(request.length === 0)
 	{
 		sendInvalid(client, REQUEST_IS_NOT_VALID, 'Request Is Not a Valid String');
 		return;
@@ -86,16 +86,16 @@ ServerState.prototype.processRequest = function(client,request)
 
 
 	// do the look up on the action
-	if(action == "initialise") this.initialiseCall(client, request_parts);
-	else if (action == "get_file") this.getCall(client, request_parts);
-	else if (action == "join") this.joinCall(client, request_parts);
-	else if (action == "move") this.moveCall(client, request_parts);
-	else if (action == "next_player") this.nextPlayerCall(client, request_parts);
-	else if (action == "game_over") this.gameOverCall(client, request_parts);
-	else if (action == "winning_player") this.winningPlayerCall(client, request_parts);
-	else if (action == "reset") this.resetCall(client, request_parts);
+	if(action === "initialise") this.initialiseCall(client, request_parts);
+	else if (action === "get_file") this.getCall(client, request_parts);
+	else if (action === "join") this.joinCall(client, request_parts);
+	else if (action === "move") this.moveCall(client, request_parts);
+	else if (action === "next_player") this.nextPlayerCall(client, request_parts);
+	else if (action === "game_over") this.gameOverCall(client, request_parts);
+	else if (action === "winning_player") this.winningPlayerCall(client, request_parts);
+	else if (action === "reset") this.resetCall(client, request_parts);
 
-}
+};
 
 
 /**
@@ -109,7 +109,7 @@ ServerState.prototype.processRequest = function(client,request)
 ServerState.prototype.winningPlayerCall = function(client, request_parts)
 {
 	// CODE TO GO HERE
-}
+};
 
 /**
  * Function to process a reset call from the client. This must first
@@ -122,7 +122,7 @@ ServerState.prototype.winningPlayerCall = function(client, request_parts)
 ServerState.prototype.resetCall = function(client, request_parts)
 {
 	// CODE TO GO HERE
-}
+};
 
 /**
  * Function that is called when the client requests 'game_over' comes in. This
@@ -135,7 +135,7 @@ ServerState.prototype.resetCall = function(client, request_parts)
 ServerState.prototype.gameOverCall = function(client, request_parts)
 {
 	// CODE TO GO HERE
-}
+};
 
 
 /**
@@ -148,7 +148,7 @@ ServerState.prototype.gameOverCall = function(client, request_parts)
 ServerState.prototype.nextPlayerCall = function(client, request_parts)
 {
 	// CODE TO GO HERE
-}
+};
 
 
 
@@ -166,7 +166,7 @@ ServerState.prototype.nextPlayerCall = function(client, request_parts)
 ServerState.prototype.moveCall = function(client, request_parts)
 {
 	//CODE TO GO HERE
-}
+};
 
 
 
@@ -181,7 +181,7 @@ ServerState.prototype.moveCall = function(client, request_parts)
 ServerState.prototype.joinCall = function(client, request_parts)
 {
 	// CODE TO GO HERE
-}
+};
 
 
 
@@ -199,7 +199,7 @@ ServerState.prototype.joinCall = function(client, request_parts)
 ServerState.prototype.getCall = function(client, request_parts)
 {
 	// check that the request is valid
-	if(this.state != this.INITIALISED) 
+	if(this.state !== this.INITIALISED)
 	{
 		client.write('0,0,Game is not in the initialised state\n');
 		return;
@@ -211,10 +211,10 @@ ServerState.prototype.getCall = function(client, request_parts)
 	var request_item = request_parts[1];
 	for(var i = 0; i < possible_gets.length; i++)
 	{
-		if(request_item == possible_gets[i]) 
+		if(request_item === possible_gets[i])
 		{
 			// build the arguments object
-			var args = {}
+			var args = {};
 			args.request = request_parts[0];
 			args.item = request_parts[1];
 			args.session_id = this.session_id;
@@ -231,14 +231,14 @@ ServerState.prototype.getCall = function(client, request_parts)
 			 */
 			this.emit('get_file',client, args);
 			return;
-		}	
+		}
 	}
 
 	// if its not found call and error event
 	sendInvalid(client, -1,'Get Item is Not one of: ' + possible_gets);
 	return;
 
-}
+};
 
 
 
@@ -253,14 +253,14 @@ ServerState.prototype.getCall = function(client, request_parts)
  */
 ServerState.prototype.initialiseCall = function(client, request_parts)
 {
-	if(this.state != this.IDLE)
+	if(this.state !== this.IDLE)
 	{
 		client.write("1,0,Game Not Idle\n");
 		return;
 	}
 	
 	// the state is correct for the request, check the arguments are ok
-	if(request_parts.length < 4) 
+	if(request_parts.length < 4)
 	{
 		this.sendInvalid(client, REQUEST_INITIALISE_IS_INCOMPLETE,
 				"Request Incomplete. Expecting [intialise,num_players,session_name,files_id]");
@@ -284,7 +284,7 @@ ServerState.prototype.initialiseCall = function(client, request_parts)
 	 */
 	this.emit('initialise', client, args);
 	return;
-}
+};
 
 /**
  * Function that processes invalid requests. If an invalid request is 
@@ -297,7 +297,7 @@ ServerState.prototype.initialiseCall = function(client, request_parts)
  */
 ServerState.prototype.sendInvalid = function(client, code, reason)
 {
-	var err = {'message': reason, 'code' : code}
+	var err = {'message': reason, 'code' : code};
 	/**
 	 * Event that is triggered by an invalid request
 	 * @event ServerState#invalid_request
@@ -306,29 +306,29 @@ ServerState.prototype.sendInvalid = function(client, code, reason)
 	 * @param {object} err An error object containing the error code and the reason
 	 */
 	this.emit('invalid_request', client, err);
-}
+};
 
 
 
 ServerState.prototype.setSessionId = function(id)
 {
 	this.session_id = id;
-}
+};
 
 ServerState.prototype.setFilesId = function(id)
 {
 	this.files_id = id;
-}
+};
 
 ServerState.prototype.getSessionId = function(id)
 {
 	return this.session_id;
-}
+};
 
 ServerState.prototype.getFilesId = function(id)
 {
 	return this.files_id;
-}
+};
 
 /**
  * Function to set the state of the server. 
@@ -338,7 +338,7 @@ ServerState.prototype.getFilesId = function(id)
 ServerState.prototype.setState = function(state)
 {
 	this.state = state;
-}
+};
 
 
 module.exports = ServerState;
