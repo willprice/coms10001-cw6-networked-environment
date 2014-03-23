@@ -2,11 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77b8666f-5762-4c33-a43a-c0332223ba43" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ClientBase.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Controllable.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/NetworkWrapper.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/RemoteControllable.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/RemoteInitialisable.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/TCPClient.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/const.js" afterPath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/const.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/if.js" afterPath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/if.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/ifreturn.js" afterPath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/ifreturn.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" afterPath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/server.js" afterPath="$PROJECT_DIR$/src/server.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/server_state.js" afterPath="$PROJECT_DIR$/src/server_state.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/var.js" afterPath="$PROJECT_DIR$/node_modules/nodeunit/node_modules/tap/node_modules/runforcover/node_modules/bunker/node_modules/burrito/node_modules/uglify-js/test/unit/compress/test/var.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
@@ -44,7 +48,7 @@
       <file leaf-file-name="server.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="246" column="45" selection-start="8322" selection-end="8322" vertical-scroll-proportion="0.0" vertical-offset="1583" max-vertical-offset="4335">
+            <state line="246" column="45" selection-start="8322" selection-end="8325" vertical-scroll-proportion="0.0" vertical-offset="3248" max-vertical-offset="4335">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -55,7 +59,7 @@
       <file leaf-file-name="server_state.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/server_state.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="299" column="48" selection-start="9666" selection-end="9666" vertical-scroll-proportion="0.41398343" vertical-offset="4035" max-vertical-offset="5265">
+            <state line="264" column="45" selection-start="8432" selection-end="8444" vertical-scroll-proportion="1.3518867" vertical-offset="2527" max-vertical-offset="5265">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -410,7 +414,11 @@
       <created>1395616143781</created>
       <updated>1395616143781</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Clean up some errors in provided files&#10;">
+      <created>1395617012863</created>
+      <updated>1395617012863</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -474,7 +482,8 @@
     <MESSAGE value="Use `bind` to handle `this` in modularised create_db code" />
     <MESSAGE value="Add server files to the project." />
     <MESSAGE value="Add server files to the project.&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add server files to the project.&#10;" />
+    <MESSAGE value="Clean up some errors in provided files&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean up some errors in provided files&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -617,7 +626,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="246" column="45" selection-start="8322" selection-end="8322" vertical-scroll-proportion="0.0" vertical-offset="1583" max-vertical-offset="4335">
+        <state line="246" column="45" selection-start="8322" selection-end="8325" vertical-scroll-proportion="0.0" vertical-offset="3248" max-vertical-offset="4335">
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -626,7 +635,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server_state.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="299" column="48" selection-start="9666" selection-end="9666" vertical-scroll-proportion="0.41398343" vertical-offset="4035" max-vertical-offset="5265">
+        <state line="264" column="45" selection-start="8432" selection-end="8444" vertical-scroll-proportion="1.3518867" vertical-offset="2527" max-vertical-offset="5265">
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
