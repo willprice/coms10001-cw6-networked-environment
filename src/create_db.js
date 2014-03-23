@@ -1,4 +1,6 @@
 "use strict";
+var sql = require("sqlite3");
+var db = new sql.Database("test.db");
 
 var contents = {
     that: this,
@@ -109,7 +111,5 @@ var contents = {
 
 module.exports = contents;
 
-var sql = require("sqlite3");
-var db = new sql.Database("test.db");
 var table_list = ['files', 'session', 'player', 'move'];
 contents.dropPreviouslyCreatedTables(table_list);

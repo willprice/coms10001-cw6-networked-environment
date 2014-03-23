@@ -9,13 +9,13 @@
     <option forin="true" />
     <option freeze="true" />
     <option immed="true" />
-    <option newcap="false" />
+    <option newcap="true" />
     <option noarg="true" />
     <option noempty="true" />
     <option nonew="true" />
     <option plusplus="false" />
     <option undef="true" />
-    <option strict="false" />
+    <option strict="true" />
     <option trailing="true" />
     <option latedef="false" />
     <option unused="false" />
@@ -43,7 +43,7 @@
     <option shadow="false" />
     <option sub="false" />
     <option supernew="false" />
-    <option validthis="false" />
+    <option validthis="true" />
     <option browser="false" />
     <option couch="false" />
     <option devel="false" />

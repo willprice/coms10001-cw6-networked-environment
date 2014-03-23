@@ -27,7 +27,7 @@ exports.addMove = function (player_id, previous_location, target_location, ticke
     var sql_statement = "INSERT INTO move VALUES (?, ?, ?, ?, ?)";
 
     db.run(sql_statement, [null, player_id, previous_location, target_location, ticket],
-        function (err, data) {
+        function (err) {
             logAndRunCallback(err, "move added properly!", callback);
         }
     );
@@ -44,7 +44,7 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
     var sql_statement = "INSERT INTO player VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     db.run(sql_statement, [null, player_type, player_location, taxi_tickets, bus_tickets,
         underground_tickets, double_move_tickets, black_tickets, session_id],
-        function(err, data) {
+        function(err) {
             logAndRunCallback(err, "player added properly!", callback, [this.lastID]);
         }
     );
@@ -102,7 +102,7 @@ exports.getSession = function (session_id, callback) {
 exports.setPlayerLocation = function (player_id, new_location, callback) {
     var sql_statement = "UPDATE player SET location = ? WHERE player_id = ?";
 
-    db.run(sql_statement, [new_location, player_id], function (err, data) {
+    db.run(sql_statement, [new_location, player_id], function (err) {
         logAndRunCallback(err, "updated location properly!", callback);
     });
 };
