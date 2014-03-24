@@ -15,11 +15,11 @@ function logAndRunCallback(err, message, callback, args) {
 
 // function to get a file from the files table
 exports.getFile = function (files_id, type, callback) {
-    db.get("SELECT " + type + " FROM files WHERE files_id = ?", [files_id], function (err, data) {
+    db.get("SELECT " + type + " FROM files WHERE files_id = ?", [files_id], function (err, row) {
         if (err) {
             return callback(err);
         }
-        callback(null, data[type]);
+        callback(err, row[type]);
     });
 };
 
@@ -54,8 +54,8 @@ exports.addSession = function (session_name, files_id, callback) {
     var sql_statement = "INSERT INTO session VALUES (?, ?, ?)";
 
     db.run(sql_statement, [null, session_name, files_id],
-    function(err, data) {
-        logAndRunCallback(err, "session added properly! (Fuck off jamie)", callback, data.session_id);
+    function(err) {
+        logAndRunCallback(err, "session added properly! (Fuck off jamie)", callback, this.lastID);
     });
 };
 

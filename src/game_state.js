@@ -42,7 +42,7 @@ GameState.prototype.reset = function()
 	this.double_move_turns = 0;
 	this.is_game_over  = false;
 	this.current_player = 0;
-}
+};
 
 
 /**
@@ -62,10 +62,10 @@ GameState.prototype.movePlayer = function(id, target, ticket)
 {
 
 	// basic sense checks
-	if(id != this.current_player) return false;
+	if(id !== this.current_player) return false;
 	if(!this.playerExists(id)) return false;
 
-	if(ticket == "DoubleMove")
+	if(ticket === "DoubleMove")
 	{
 		// cant use a double move whilst in double move mode
 		if(this.using_double_move) return true;
@@ -83,7 +83,7 @@ GameState.prototype.movePlayer = function(id, target, ticket)
 
 	return moveOk;
 
-}
+};
 
 /**
  * Function to check if the game is in a game over state
@@ -92,7 +92,7 @@ GameState.prototype.movePlayer = function(id, target, ticket)
 GameState.prototype.isGameOver = function()
 {
 	return this.is_game_over;
-}
+};
 
 
 /**
@@ -102,7 +102,7 @@ GameState.prototype.isGameOver = function()
 GameState.prototype.getNextPlayer = function()
 {
 	return this.current_player;
-}
+};
 
 /**
  * Function to set the gamestate to be ready to start running
@@ -113,7 +113,7 @@ GameState.prototype.startRunning = function()
 {
 	this.current_player = this.x_ids[0];
 	this.is_game_over = false;
-}
+};
 
 
 
@@ -125,7 +125,7 @@ GameState.prototype.startRunning = function()
 GameState.prototype.getPlayerIds = function()
 {
 	return this.player_ids;
-}
+};
 
 /**
  * Function to add a new player to the game state. 
@@ -137,7 +137,7 @@ GameState.prototype.getPlayerIds = function()
 GameState.prototype.addPlayer = function(player)
 {
 	this.players.push(player);
-	if(player.type=="X")
+    if(player.type === "X")
 	{
 		this.x_ids.push(player.id);
 	}
@@ -147,7 +147,7 @@ GameState.prototype.addPlayer = function(player)
 	}
 
 	this.player_ids.push(player.id);
-}
+};
 
 /**
  * Function to set the graph variable. 
@@ -156,7 +156,7 @@ GameState.prototype.addPlayer = function(player)
 GameState.prototype.setGraph = function(graph)
 {
 	this.graph = graph;
-}
+};
 
 
 
@@ -167,7 +167,7 @@ GameState.prototype.setGraph = function(graph)
 GameState.prototype.getWinningPlayer = function()
 {
 	return this.winning_player;
-}
+};
 
 
 
@@ -178,7 +178,7 @@ GameState.prototype.getWinningPlayer = function()
 GameState.prototype.getNumberOfPlayers = function()
 {
 	return this.players.length;
-}
+};
 
 
 GameState.prototype.printPlayers = function()
@@ -187,7 +187,7 @@ GameState.prototype.printPlayers = function()
 	{
 		console.log(this.players[i]);
 	}
-}
+};
 
 
 
@@ -196,23 +196,23 @@ GameState.prototype.getPlayer = function(id)
 {
 	for(var i = 0; i < this.players.length; i++)
 	{
-		if(id == this.players[i].id)
+		if(id === this.players[i].id)
 		{
 			return this.players[i];
 		}
 	}
 	return null;
-}
+};
 
 
 GameState.prototype.playerExists = function(id)
 {
 	for(var i = 0; i < this.player_ids.length; i++)
 	{
-		if(id == this.player_ids[i]) return true;
+		if(id === this.player_ids[i]) return true;
 	}
 	return false;
-}
+};
 
 // check if a location is occupied
 GameState.prototype.isLocationOccupied = function(loc)
@@ -220,10 +220,10 @@ GameState.prototype.isLocationOccupied = function(loc)
 	for(var i = 0; i < this.d_ids.length; i++)
 	{
 		var did = this.d_ids[i];
-		if(this.getPlayer(did).location_id == loc) return true;
+		if(this.getPlayer(did).location_id === loc) return true;
 	}
 	return false;
-}
+};
 
 
 
@@ -233,32 +233,33 @@ GameState.prototype.removePlayer = function(player)
 {
 	console.log("[State]: Removing player " + player.id);
 	var id = player.id;
+    var i;
 	
 	// remove the ids from the array
 	var remove_index = 0;
-	for(var i = 0; i < this.player_ids.length; i++)
+	for(i = 0; i < this.player_ids.length; i++)
 	{
-		if(this.player_ids[i] == id) remove_index = i;
+		if(this.player_ids[i] === id) remove_index = i;
 	}
 	this.player_ids.splice(remove_index,1);
 
 	// remove from detective array
 	if(!this.isMrX())
 	{
-		for(var i = 0; i < this.d_ids.length; i++)
+		for(i = 0; i < this.d_ids.length; i++)
 		{
-			if(this.d_ids[i] == id) remove_index = i;
+			if(this.d_ids[i] === id) remove_index = i;
 		}
 		this.d_ids.splice(remove_index,1);
 	}
 
 	// remove the player from the players array
-	for(var i = 0; i < this.players.length; i++)
+	for(i = 0; i < this.players.length; i++)
 	{
-		if(id == this.players[i].id) remove_index = i;
-	}	
+		if(id === this.players[i].id) remove_index = i;
+    }
 	this.players.splice(remove_index,1);
-}
+};
 
 // function to check if a player is able to move
 GameState.prototype.isPlayerUnableToMove = function(player)
@@ -267,14 +268,14 @@ GameState.prototype.isPlayerUnableToMove = function(player)
 	for(var i = 0; i < moves.length; i++)
 	{
 		var move = moves[i];
-		if(player.getTicketNumber(move.type) > 0 && 
+		if(player.getTicketNumber(move.type) > 0 &&
 				!this.isLocationOccupied(move.id))
 		{
 			return false;
 		}
 	}
 	return true;
-}
+};
 
 // function to check if a given move is possible
 GameState.prototype.moveIsPossible = function(player, target, ticket)
@@ -291,11 +292,11 @@ GameState.prototype.moveIsPossible = function(player, target, ticket)
 	var locationsConnected = false;
 	for(var i = 0; i < moves.length; i++)
 	{
-		if(target == moves[i].id)
+		if(target === moves[i].id)
 		{
 			locationsConnected = true;
 			break;
-		}		
+		}
 	}
 	if(!locationsConnected)
 	{
@@ -311,21 +312,21 @@ GameState.prototype.moveIsPossible = function(player, target, ticket)
 	}
 
 	return true;
-}
+};
 
 
 GameState.prototype.getMrX = function()
 {
 	var x_id = this.x_ids[0];
 	return this.getPlayer(x_id);
-}
+};
 
 // function to check if mr x is at a location
 GameState.prototype.isMrXAtLocation = function(loc)
 {
-	if(this.getMrX().id == loc) return true;
+	if(this.getMrX().id === loc) return true;
 	return false;
-}
+};
 
 // function to update the tickets
 GameState.prototype.updateTickets = function(player, ticket)
@@ -333,13 +334,13 @@ GameState.prototype.updateTickets = function(player, ticket)
 	player.useTicket(ticket);
 	var mr_x = this.getPlayer(this.x_ids[0]);
 	mr_x.addTicket(ticket);
-}
+};
 
 // function that checks if a player has gotten stuck
 GameState.prototype.isPlayerOutOfGame = function(player)
 {
 	// mr x isnt out of the game
-	if(player.type == "X") return false;
+	if(player.type === "X") return false;
 
 
 	var moves = this.getPossibleMoves(player.location_id);
@@ -349,25 +350,25 @@ GameState.prototype.isPlayerOutOfGame = function(player)
 	}
 
 	return true;
-}
+};
 
 
 // get the list of possible moves from a location
 GameState.prototype.getPossibleMoves = function(location_id)
 {
-	var edges = this.graph.getNodeEdges(location_id);	
+	var edges = this.graph.getNodeEdges(location_id);
 	var moves = [];
 	for(var i = 0; i < edges.length; i++)
 	{
 		var e = edges[i];
 		var move = {};
 		move.type = edges[i].type;
-		move.id = location_id == e.id1 ? e.id2 : e.id1;
+		move.id = location_id === e.id1 ? e.id2 : e.id1;
 		moves.push(move);
 	}
 
 	return moves;
-}
+};
 
 
 GameState.prototype.nextTurn = function()
@@ -376,7 +377,7 @@ GameState.prototype.nextTurn = function()
 	var current_index = 0;
 	for(var i = 0; i < this.players.length; i++)
 	{
-		if(this.current_player == this.players[i].id)
+		if(this.current_player === this.players[i].id)
 		{
 			current_index = i;
 			break;
@@ -385,18 +386,18 @@ GameState.prototype.nextTurn = function()
 
 	// check wrap around
 	var next_index = current_index+1;
-	if(next_index == this.players.length) next_index = 0;
+	if(next_index === this.players.length) next_index = 0;
 
 	this.current_player = this.player_ids[next_index];
 	console.log("[state]: Next Player: " + this.current_player);
-}
+};
 
 
 GameState.prototype.isMrX = function(id)
 {
-	if(id == this.getMrX().id) return true;
+	if(id === this.getMrX().id) return true;
 	return false;
-}
+};
 
 
 GameState.prototype.doMove = function(id, target, ticket)
@@ -426,7 +427,7 @@ GameState.prototype.doMove = function(id, target, ticket)
 
 	player.moveTo(target, ticket);
 	player.useTicket(ticket);
-	if(ticket != "SecretMove")
+	if(ticket !== "SecretMove")
 	{
 		this.getMrX().addTicket(ticket);
 	}
@@ -434,7 +435,7 @@ GameState.prototype.doMove = function(id, target, ticket)
 	if(this.using_double_move)
 	{
 		this.double_move_turns++;
-		if(this.double_move_turns == 2)
+		if(this.double_move_turns === 2)
 		{
 			this.using_double_move = false;
 			this.nextTurn();
@@ -445,7 +446,7 @@ GameState.prototype.doMove = function(id, target, ticket)
 
 	this.nextTurn();
 	return true;
-}
+};
 
 
 GameState.prototype.evaluateGameOver = function()
@@ -455,7 +456,7 @@ GameState.prototype.evaluateGameOver = function()
 	for(var i = 0; i < this.d_ids.length; i++)
 	{
 		var did = this.d_ids[i];
-		if(this.getPlayer(did).location_id == xloc)
+		if(this.getPlayer(did).location_id === xloc)
 		{
 			console.log("[state]: Mr X Has Been caught at location " + xloc);
 			this.winning_player = did;
@@ -465,7 +466,7 @@ GameState.prototype.evaluateGameOver = function()
 	}
 
 	
-	if(this.d_ids.length == 0)
+	if(this.d_ids.length === 0)
 	{
 		console.log("[state]: No More Detectives In the Game. Game Over!");
 		this.winning_player = this.x_ids[0];
@@ -473,16 +474,13 @@ GameState.prototype.evaluateGameOver = function()
 		return;
 	}
 
-	if(this.getMrX().move_list.length == MR_X_MAX_TURNS)
+	if(this.getMrX().move_list.length === MR_X_MAX_TURNS)
 	{
 		console.log("[state]: Detectives are out of turns. Game Over");
 		this.winning_player = this.x_ids[0];
 		this.is_game_over = true;
 		return;
 	}
-}
+};
 
 module.exports = GameState;
-
-
-

@@ -58,6 +58,7 @@ server_state.on('next_player', onNextPlayer);
 server_state.on('game_over', onGameOver);
 server_state.on('winning_player', onWinningPlayer);
 server_state.on('reset', onReset);
+server_state.on('error', onError);
 
 
 // The following module provides a set of helper functions that
@@ -96,7 +97,7 @@ function connect(client) {
 	client.setEncoding("utf8");
 	client.name = client.remoteAddress + ":"+ client.remotePort;
 	client.on('data', receive);
-	console.log("[Message]: Hello Client " + client.name);	
+	console.log("[Message]: Hello Client " + client.name);
 	function receive(request) { server_state.processRequest(client, request); }
 }
 
@@ -124,7 +125,9 @@ function connect(client) {
 // This is the written to the client
 function onWinningPlayer(client)
 {
-	// CODE GOES HERE
+	if (game_state.isGameOver()) {
+        writeResponseToClient(client, 1, 1, game_state.getWinningPlayer());
+    }
 }
 
 // This function is triggered when a `'reset'` event is emitted by the `ServerState`.
@@ -133,7 +136,9 @@ function onWinningPlayer(client)
 // If this has been done OK, write it to the client
 function onReset(client)
 {
-	// CODE GOES HERE
+	game_state.reset();
+    server_state.reset();
+    writeResponseToClient(client, 1, 1);
 }
 
 
@@ -144,7 +149,10 @@ function onReset(client)
 // using the `server_state.setState(state)` function
 function onGameOver(client)
 {
-	// CODE GOES HERE
+	if (game_state.isGameOver()) {
+        server_state.setState(server_state.GAME_OVER);
+
+    }
 }
 
 
@@ -274,10 +282,28 @@ function onInitialise(client, args)
 	});
 }
 
+// formatCode is 1 if the request from client was formatted correctly, otherwise it is 0.
+function writeResponseToClient(client, formatCode, returnCode) {
+    var response = formatCode + "," + returnCode;
+    var extra_args = [].slice.call(arguments, ':');
+    extra_args = extra_args.slice(3, extra_args.length);
+
+    for (var index = 0; index < extra_args.length; index++) {
+        response += "," + extra_args[index];
+    }
+    response += "\n";
+    console.log("[Response_Debug]: " + response);
+    client.write(response);
+}
+
 // This function is triggered when the `ServerState` gets an invalid
 // request. It simply writes the error to the client
 function onInvalid(client, err)
 {
-	client.write("0," + err.code + "," + err.message + "\n");
+	writeResponseToClient(client, 0, err.code, err.message);
 }
 
+function onError(client, err)
+{
+    writeResponseToClient(client, 1, err.code, err.message);
+}
