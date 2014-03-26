@@ -3,41 +3,41 @@
 var sqlite3 = require("sqlite3");
 
 var db_access = require('./../src/db_access');
+var create_db = require('./../src/create_db');
+
+var db = new sqlite3.Database(":memory:");
+
 module.exports = {
-  setUp: function(callback) {
-    this.db = new sqlite3.Database('test.db');
-    db_access.addSession("test_session", 1, callback);
-  },
+    setUp: function(callback) {
+        "use strict";
+        db_access.setDatabase(db);
+        create_db.setDatabase(db);
+        var table_list = ['files', 'session', 'player', 'move'];
+        create_db.dropPreviouslyCreatedTables(table_list, callback);
+    },
 
-  tearDown: function(callback) {
-    this.db.close(callback);
-  },
+    testAddMoveAndGetMove: function(test) {
+        "use strict";
+        var move_id = 1;
+        var start_location = 2;
+        var end_location = 3;
+        var ticket_type = "Bus";
+        var player_id = 1;
 
-  testQueryingNonExistantFileThrowsError: function(test) {
-    var files_id = 1;
-    var file_type = 'pos';
-    var error_type ='positions';
-    test.throws(
-        db_access.getFile(files_id, error_type,
-          function(err) {
-            if (err) { throw err; }
-            test.done();
-          }),
-        error_type);
-  },
+        db_access.addMove(player_id, start_location, end_location,
+            "Bus", function(err) {
 
-  testQueryingFirstFile: function(test) {
-    var files_id = 1;
-    var file_type = 'pos';
-    db_access.getFile(files_id, file_type, function(err, data) {
-      if(err) {
-        test.done();
-        throw err;
-      }
-      test.equal(data.split("\n", 10));
-      test.done();
-    });
-  }
+            db_access.getMoves(1, function(err, rows) {
+                var move = rows[0];
+                test.equal(move.move_id, move_id);
+                test.equal(move.start_location, start_location);
+                test.equal(move.end_location, end_location);
+                test.equal(move.ticket_type, ticket_type);
+                test.equal(move.player_id, player_id);
+                test.done();
+            });
+        })
+    }
 };
 
 function dbCallback(err, data)

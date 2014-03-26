@@ -9,9 +9,15 @@ var db = new sql.Database("test.db");
 function logAndRunCallback(err, message, callback, args) {
     if (!err) {
         console.log("[Message]: " + message);
+    } else {
+        console.log("[Error]");
     }
     callback.apply(null, [err].concat(args));
 }
+
+exports.setDatabase = function(database) {
+    db = database;
+};
 
 // function to get a file from the files table
 exports.getFile = function (files_id, type, callback) {
@@ -26,7 +32,7 @@ exports.getFile = function (files_id, type, callback) {
 exports.addMove = function (player_id, previous_location, target_location, ticket, callback) {
     var sql_statement = "INSERT INTO move VALUES (?, ?, ?, ?, ?)";
 
-    db.run(sql_statement, [null, player_id, previous_location, target_location, ticket],
+    db.run(sql_statement, [null, previous_location, target_location, ticket, player_id],
         function (err) {
             logAndRunCallback(err, "move added properly!", callback);
         }

@@ -2,14 +2,15 @@
 var sql = require("sqlite3");
 var db = new sql.Database("test.db");
 
-var contents = {
-    that: this,
+module.exports = {
+    setDatabase: function(database) {
+        db = database;
+    },
 
-    dropPreviouslyCreatedTables: function (table_list)
+    dropPreviouslyCreatedTables: function (table_list, callback)
     {
         var num_tables = table_list.length;
         var tables_dropped = 0;
-        var that = this;
         function logTableDropIncrementCount(err) {
             if (err) { throw err; }
             console.log("Dropped table");
@@ -19,21 +20,21 @@ var contents = {
         function ifAllTablesDroppedCreateFilesTable() {
             if (tables_dropped === num_tables) {
                 console.log("Finished dropping tables");
-                that.createFilesTable();
+                this.createFilesTable(callback);
             }
         }
 
         function dropTablesCallback(err, data) {
             logTableDropIncrementCount(err);
-            ifAllTablesDroppedCreateFilesTable.call(that);
+            ifAllTablesDroppedCreateFilesTable.call(this);
         }
 
         for (var i = 0; i < num_tables; i++) {
-            db.run("DROP TABLE IF EXISTS " + table_list[i], dropTablesCallback);
+            db.run("DROP TABLE IF EXISTS " + table_list[i], dropTablesCallback.bind(this));
         }
     },
 
-  createFilesTable: function ()
+  createFilesTable: function(callback)
     {
         var sql_stmt = "CREATE TABLE files (" +
             "files_id INTEGER PRIMARY KEY, " +
@@ -45,13 +46,13 @@ var contents = {
         function logAndCreateSessionTable(err) {
             if (err) { throw err; }
             console.log("Table 'files' created");
-            this.createSessionTable();
+            this.createSessionTable(callback);
         }
 
         db.run(sql_stmt, logAndCreateSessionTable.bind(this));
     },
 
-    createSessionTable: function ()
+    createSessionTable: function(callback)
     {
         var sql_stmt = "CREATE TABLE session (" +
             "session_id INTEGER PRIMARY KEY," +
@@ -62,13 +63,13 @@ var contents = {
         function logAndCreatePlayerTable(err) {
             if (err) { throw err; }
             console.log("Table 'session' created");
-            this.createPlayerTable();
+            this.createPlayerTable(callback);
         }
 
         db.run(sql_stmt, logAndCreatePlayerTable.bind(this));
     },
 
-    createPlayerTable: function ()
+    createPlayerTable: function(callback)
     {
         var sql_statement = "CREATE TABLE player (" +
             "player_id INTEGER PRIMARY KEY, " +
@@ -85,13 +86,13 @@ var contents = {
         function logAndCreateMoveTable(err) {
             if (err) { throw err; }
             console.log("Table 'player' created");
-            this.createMoveTable();
+            this.createMoveTable(callback);
         }
 
         db.run(sql_statement, logAndCreateMoveTable.bind(this));
     },
 
-    createMoveTable: function () {
+    createMoveTable: function(callback) {
         var sql_statement = "CREATE TABLE move (" +
             "move_id INTEGER PRIMARY KEY, " +
             "start_location INTEGER, " + "end_location INTEGER, " +
@@ -102,6 +103,7 @@ var contents = {
         function log(err) {
             if (err) { throw err; }
             console.log("Table 'move' created");
+            callback();
         }
 
         db.run(sql_statement, log);
@@ -109,7 +111,7 @@ var contents = {
     }
 };
 
-module.exports = contents;
-
-var table_list = ['files', 'session', 'player', 'move'];
-contents.dropPreviouslyCreatedTables(table_list);
+if (require.main === module) {
+    var table_list = ['files', 'session', 'player', 'move'];
+    exports.dropPreviouslyCreatedTables(table_list);
+}
