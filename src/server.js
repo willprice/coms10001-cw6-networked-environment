@@ -29,7 +29,7 @@
 var GameState   = require('./game_state');
 // this creates a new GameState Object
 var game_state = new GameState();
-
+var debug = true;
 
 // The `ServerState` handles two things. First, the current
 // state of the game. Second, it decodes the incoming requests.
@@ -59,6 +59,7 @@ server_state.on('game_over', onGameOver);
 server_state.on('winning_player', onWinningPlayer);
 server_state.on('reset', onReset);
 server_state.on('error', onError);
+server_state.on('send_response', sendResponse);
 
 
 // The following module provides a set of helper functions that
@@ -71,6 +72,10 @@ var game_state_init = require("./game_state_init");
 // as this server script for this require function to work
 var db_access = require('./db_access');
 
+// `error` and `success` both contain codes that are passed between
+// client and server.
+var errors = require('./error');
+var successes = require('./success');
 
 
 
@@ -126,7 +131,10 @@ function connect(client) {
 function onWinningPlayer(client)
 {
 	if (game_state.isGameOver()) {
-        writeResponseToClient(client, 1, 1, game_state.getWinningPlayer());
+        sendResponseToValidRequest(client, successes.game_is_over, game_state.getWinningPlayer);
+    } else {
+        var err = {code: errors.gameNotOver, message: "No winning player as game is not over" };
+        sendErrorResponseToValidRequest(client, err);
     }
 }
 
@@ -138,7 +146,7 @@ function onReset(client)
 {
 	game_state.reset();
     server_state.reset();
-    writeResponseToClient(client, 1, 1);
+    sendResponseToValidRequest(client, successes.reset);
 }
 
 
@@ -149,9 +157,12 @@ function onReset(client)
 // using the `server_state.setState(state)` function
 function onGameOver(client)
 {
-	if (game_state.isGameOver()) {
+    if (game_state.isGameOver()) {
         server_state.setState(server_state.GAME_OVER);
-
+        sendResponseToValidRequest(client, successes.game_is_over);
+    } else {
+        var err = {code: 0, message: "Game is not over"};
+        sendErrorResponseToValidRequest(client, err);
     }
 }
 
@@ -161,7 +172,12 @@ function onGameOver(client)
 // who the next player is and write it to the client
 function onNextPlayer(client)
 {
-	// CODE GOES HERE
+	if (game_state.isGameOver()) {
+        var err = {code: 0, message: "Game is over"};
+        sendErrorResponseToValidRequest(client, err);
+    } else {
+        sendResponseToValidRequest(client, successes.player_retrieved, game_state.getNextPlayer());
+    }
 }
 
 
@@ -178,7 +194,19 @@ function onNextPlayer(client)
 // to the client
 function onMove(client, args)
 {
-	// CODE GOES HERE
+    var id = args.id;
+    var target = args.target;
+    var ticket = args.ticket;
+
+	var success = game_state.movePlayer(id, target, ticket);
+
+    if (success) {
+        // TODO: Add move to database
+        //db_access.addMove(id, prev, target, ticket);
+        sendResponseToValidRequest(client, successes.move);
+    } else {
+        sendErrorResponseToValidRequest(client, errors.invalidMove);
+    }
 }
 
 
@@ -195,7 +223,11 @@ function onMove(client, args)
 // `server_state.setState(state)` function
 function onJoin(client, args)
 {
-	// CODE GOES HERE
+    game_state.startRunning();
+    server_state.setState(server_state.RUNNING);
+
+    var player_ids = game_state.getPlayerIds().join(":");
+    sendResponseToValidRequest(client, successes.join_succeeded, player_ids);
 }
 
 
@@ -228,7 +260,7 @@ function onGet(client, args)
 
 	function sendText(dump)
 	{
-		client.write('1,'+dump.length + "\n");
+		client.write('1,' + dump.length + "\n");
 		client.write(dump, function(){
 			console.log("[Message]: Finished Writing File");
 			return;
@@ -239,7 +271,7 @@ function onGet(client, args)
 	function sendBinary(dump)
 	{
 		var buf = new Buffer(dump);
-		client.write('1,'+buf.length + "\n");
+		client.write('1,' + buf.length + "\n");
 		client.write(buf, function() {
 			console.log("[Message]: Finished Sending Image File");
 			return;
@@ -277,13 +309,13 @@ function onInitialise(client, args)
 
 		console.log("[Message]: Game Initialised");
 
-		client.write('1,1,Game Initialised\n');
+        sendResponse(client, 1, 1);
 		server_state.setState(server_state.INITIALISED);
 	});
 }
 
 // formatCode is 1 if the request from client was formatted correctly, otherwise it is 0.
-function writeResponseToClient(client, formatCode, returnCode) {
+function sendResponse(client, formatCode, returnCode) {
     var response = formatCode + "," + returnCode;
     var extra_args = [].slice.call(arguments, ':');
     extra_args = extra_args.slice(3, extra_args.length);
@@ -292,18 +324,48 @@ function writeResponseToClient(client, formatCode, returnCode) {
         response += "," + extra_args[index];
     }
     response += "\n";
-    console.log("[Response_Debug]: " + response);
+    if (debug) console.log("[Response_Debug]: " + response);
     client.write(response);
 }
 
 // This function is triggered when the `ServerState` gets an invalid
 // request. It simply writes the error to the client
+function sendResponseToInvalidRequest(client, err) {
+    sendResponse(client, 0, err.code, err.message);
+}
+
 function onInvalid(client, err)
 {
-	writeResponseToClient(client, 0, err.code, err.message);
+	sendResponseToInvalidRequest(client, err);
+}
+
+/**
+ *
+ * @param client
+ * @param err: {code, message}
+ */
+function sendErrorResponseToValidRequest(client, err) {
+    sendResponse(client, 1, err.code, err.message);
 }
 
 function onError(client, err)
 {
-    writeResponseToClient(client, 1, err.code, err.message);
+    sendErrorResponseToValidRequest(client, err);
 }
+
+function sendResponseToValidRequest(client, return_code) {
+    if (arguments.length > 2) {
+        var args = toArray(arguments);
+        args.insert(1, 1);
+    }
+    sendResponse(client, 1, return_code);
+}
+
+// Helper functions
+function toArray(args) {
+    return [].slice.call(args, ':');
+}
+
+Array.prototype.insert = function (index, item) {
+    this.splice(index, 0, item);
+};
