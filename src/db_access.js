@@ -12,6 +12,11 @@ var db = new sql.Database("test.db");
  * @param {string} ticket
  * @param {function(err)} callback
  */
+exports.addMoveObject = function(move, callback) {
+   exports.addMove(move.player_id, move.start_location, move.end_location,
+   move.ticket_type, callback);
+};
+
 exports.addMove = function (player_id, previous_location, target_location, ticket, callback) {
     var sql_statement = "INSERT INTO move VALUES (?, ?, ?, ?, ?)";
 
@@ -22,11 +27,16 @@ exports.addMove = function (player_id, previous_location, target_location, ticke
     );
 };
 
+exports.addPlayerObject = function(player, callback) {
+    exports.addPlayer(player.session_id, player.type,
+        player.location, player.tickets, callback);
+};
+
 /**
  * @param {int} session_id
  * @param {String} player_type
  * @param {int} player_location
- * @param {{Taxi: int, Bus: int, Underground: int, DoubleMove: int, SecretMove: int}} tickets
+ * @param {tickets} tickets
  * @param {function(err, player_id)} callback
  */
 exports.addPlayer = function (session_id, player_type, player_location, tickets, callback) {
