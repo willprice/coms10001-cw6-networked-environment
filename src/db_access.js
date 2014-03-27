@@ -1,34 +1,17 @@
-// db_access.js
-// ------------
 "use strict";
 
 // Create the connection to the database.
 var sql = require("sqlite3");
 var db = new sql.Database("test.db");
 
-function logAndRunCallback(err, message, callback, args) {
-    if (!err) {
-        console.log("[Message]: " + message);
-    } else {
-        console.log("[Error]");
-    }
-    callback.apply(null, [err].concat(args));
-}
 
-exports.setDatabase = function(database) {
-    db = database;
-};
-
-// function to get a file from the files table
-exports.getFile = function (files_id, type, callback) {
-    db.get("SELECT " + type + " FROM files WHERE files_id = ?", [files_id], function (err, row) {
-        if (err) {
-            return callback(err);
-        }
-        callback(err, row[type]);
-    });
-};
-
+/**
+ * @param {int} player_id
+ * @param {int} previous_location
+ * @param {int} target_location
+ * @param {string} ticket
+ * @param {function(err)} callback
+ */
 exports.addMove = function (player_id, previous_location, target_location, ticket, callback) {
     var sql_statement = "INSERT INTO move VALUES (?, ?, ?, ?, ?)";
 
@@ -39,6 +22,13 @@ exports.addMove = function (player_id, previous_location, target_location, ticke
     );
 };
 
+/**
+ * @param {int} session_id
+ * @param {String} player_type
+ * @param {int} player_location
+ * @param {{Taxi: int, Bus: int, Underground: int, DoubleMove: int, SecretMove: int}} tickets
+ * @param {function(err, player_id)} callback
+ */
 exports.addPlayer = function (session_id, player_type, player_location, tickets, callback) {
     var taxi_tickets = tickets.Taxi;
     var bus_tickets = tickets.Bus;
@@ -56,6 +46,11 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
     );
 };
 
+/**
+ * @param {string} session_name
+ * @param {int} files_id
+ * @param {function(err, session_id)} callback
+ */
 exports.addSession = function (session_name, files_id, callback) {
     var sql_statement = "INSERT INTO session VALUES (?, ?, ?)";
 
@@ -65,6 +60,26 @@ exports.addSession = function (session_name, files_id, callback) {
     });
 };
 
+/**
+ * function to get a file from the files table
+ * @param {int} files_id
+ * @param {string} type
+ * @param {function(err, data)} callback
+ */
+exports.getFile = function (files_id, type, callback) {
+    db.get("SELECT " + type + " FROM files WHERE files_id = ?", [files_id], function (err, row) {
+        if (err) {
+            return callback(err);
+        }
+        callback(err, row[type]);
+    });
+};
+
+/**
+ *
+ * @param {int} player_id
+ * @param {function(err, db_rows)} callback
+ */
 exports.getMoves = function (player_id, callback) {
     var sql_statement = "SELECT * FROM move WHERE player_id = ?";
 
@@ -73,6 +88,11 @@ exports.getMoves = function (player_id, callback) {
     });
 };
 
+/**
+ *
+ * @param {int} player_id
+ * @param {function(err, db_row)} callback
+ */
 exports.getPlayer = function (player_id, callback) {
     var sql_statement = "SELECT * FROM player WHERE player_id = ?";
 
@@ -81,6 +101,10 @@ exports.getPlayer = function (player_id, callback) {
     });
 };
 
+/**
+ * @param {int} session_id
+ * @param {function(err, db_rows) } callback
+ */
 exports.getPlayerIds = function (session_id, callback) {
     var sql_statement = "SELECT player_id FROM players WHERE session_id = ?";
 
@@ -89,6 +113,10 @@ exports.getPlayerIds = function (session_id, callback) {
     });
 };
 
+/**
+ * @param {int} player_id
+ * @param {function(err, location)} callback
+ */
 exports.getPlayerLocation = function (player_id, callback) {
     var sql_statement = "SELECT location FROM players WHERE player_id = ?";
 
@@ -97,6 +125,10 @@ exports.getPlayerLocation = function (player_id, callback) {
     });
 };
 
+/**
+ * @param {int} session_id
+ * @param {function(err, db_row)} callback
+ */
 exports.getSession = function (session_id, callback) {
     var sql_statement = "SELECT * FROM session WHERE session_id = ?";
 
@@ -105,10 +137,28 @@ exports.getSession = function (session_id, callback) {
     });
 };
 
+/**
+ * @param {int} player_id
+ * @param {int} new_location
+ * @param {function(err)} callback
+ */
 exports.setPlayerLocation = function (player_id, new_location, callback) {
     var sql_statement = "UPDATE player SET location = ? WHERE player_id = ?";
 
     db.run(sql_statement, [new_location, player_id], function (err) {
         logAndRunCallback(err, "updated location properly!", callback);
     });
+};
+
+function logAndRunCallback(err, message, callback, callback_args) {
+    if (!err) {
+        console.log("[Message]: " + message);
+    } else {
+        console.log("[Error]");
+    }
+    callback.apply(null, [err].concat(callback_args));
+}
+
+exports.setDatabase = function(database) {
+    db = database;
 };

@@ -36,7 +36,7 @@ module.exports = {
                 test.equal(move.player_id, player_id);
                 test.done();
             });
-        })
+        });
     }
 };
 
