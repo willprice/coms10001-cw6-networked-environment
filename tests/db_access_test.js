@@ -54,7 +54,7 @@ module.exports = {
         }
     },
 
-    addPlayerAndGetPlayer: function(test) {
+    addPlayer: function(test) {
         var player_id = 1;
         var tickets = game_utils.create_tickets(1, 2, 3, 4, 5);
         var player = game_utils.create_player(player_id, 1, "X", 1, tickets);
@@ -69,9 +69,63 @@ module.exports = {
               test.done();
             });
         }
-    }
+    },
 
+	addSession: function(test) {
+		var session_id = 1;
+		var files_id = 1;
+		var session = game_utils.create_session(session_id, "test_session", 1);		
+		db_access.addSessionObject(session, getSessionAndTest);
+
+		function getSessionAndTest(err, actual_session_id) {
+			test.equal(actual_session_id, session.session_id);	
+			db_access.getSession(session_id, function(err, session_row) {
+				test.deepEqual(session_row, session);
+				test.done();
+			});
+		}
+	},
+
+	getPlayerIds: function(test) {
+		var player_id_1 = 1;
+		var player_id_2 = 2;	
+
+		var player_1_tickets = game_utils.create_tickets(1, 2, 3, 4, 5);
+		var player_2_tickets = game_utils.create_tickets(2, 3, 4, 5, 6);
+
+		var session_id = 1;
+		
+		var session = game_utils.create_session(1, "test_session", 1);
+		var player_1 = game_utils.create_player(player_id_1, session_id, "D",
+				1, player_1_tickets);
+		var player_2 = game_utils.create_player(player_id_2, session_id, "D",
+				1, player_2_tickets);
+
+		db_access.addSessionObject(session, function(err, id) {
+			addPlayerObjects();	
+		});
+
+		function addPlayerObjects() {
+			db_access.addPlayerObject(player_1, function(err, id) {
+				db_access.addPlayerObject(player_2, getAndTestPlayerIds);	
+			});
+		}
+
+		function getAndTestPlayerIds() {
+			db_access.getPlayerIds(session_id, function(err, player_ids) {
+				var actual_player_id_1 = player_ids[0]['player_id'];
+				var actual_player_id_2 = player_ids[1]['player_id'];
+				test.equal(actual_player_id_1, player_id_1);
+				test.equal(actual_player_id_2, player_id_2);		
+				test.done();
+			});	
+		}
+	}
 };
+
+process.on('uncaughtException', function(err) {
+	console.error(err.stack);
+});
 
 function dbCallback(err, data)
 {

@@ -56,6 +56,10 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
     );
 };
 
+exports.addSessionObject = function(session, callback) {
+    exports.addSession(session.name, session.files_id, callback);
+};
+
 /**
  * @param {string} session_name
  * @param {int} files_id
@@ -116,10 +120,10 @@ exports.getPlayer = function (player_id, callback) {
  * @param {function(err, db_rows) } callback
  */
 exports.getPlayerIds = function (session_id, callback) {
-    var sql_statement = "SELECT player_id FROM players WHERE session_id = ?";
+    var sql_statement = "SELECT player_id FROM player WHERE session_id = ?";
 
     db.all(sql_statement, [session_id], function (err, rows) {
-        logAndRunCallback(err, "got player ids correctly!", callback [rows]);
+        logAndRunCallback(err, "got player ids correctly!", callback, [rows]);
     });
 };
 

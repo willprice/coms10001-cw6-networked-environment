@@ -60,6 +60,19 @@ module.exports = {
         player_row.location, tickets);
 
         return player;
-    }
+    },
 
+	/**
+	 * @param {int} id
+	 * @param {string} name
+	 * @param {int} files_id
+	 * @returns {{session_id: *, session_name: *, files_id: *}} 
+	 */
+	create_session: function(id, name, files_id) {
+		return {
+			session_id: id,
+			name: name,
+			files_id: files_id	
+		};
+	}
 };
