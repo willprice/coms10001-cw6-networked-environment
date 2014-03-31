@@ -70,7 +70,7 @@ exports.addSession = function (session_name, files_id, callback) {
 
     db.run(sql_statement, [null, session_name, files_id],
     function(err) {
-        logAndRunCallback(err, "session added properly! (Fuck off jamie)", callback, this.lastID);
+        logAndRunCallback(err, "session added properly!", callback, this.lastID);
     });
 };
 
