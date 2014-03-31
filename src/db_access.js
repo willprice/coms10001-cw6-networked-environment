@@ -51,7 +51,13 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
     db.run(sql_statement, [null, player_type, player_location, taxi_tickets, bus_tickets,
         underground_tickets, double_move_tickets, black_tickets, session_id],
         function(err) {
-            logAndRunCallback(err, "player added properly!", callback, [this.lastID]);
+            var args;
+            if (err) {
+                args = [err, "player added properly!", callback];
+            } else {
+                args = [err, "player added properly!", callback, [this.lastID]];
+            }
+            logAndRunCallback.apply(null, args);
         }
     );
 };
@@ -70,7 +76,13 @@ exports.addSession = function (session_name, files_id, callback) {
 
     db.run(sql_statement, [null, session_name, files_id],
     function(err) {
-        logAndRunCallback(err, "session added properly!", callback, this.lastID);
+        var args;
+        if (err) {
+            args = [err, "session added properly!", callback];
+        } else {
+            args = [err, "session added properly!", callback, [this.lastID]];
+        }
+        logAndRunCallback.apply(null, args);
     });
 };
 
@@ -168,9 +180,12 @@ function logAndRunCallback(err, message, callback, callback_args) {
     if (!err) {
         console.log("[Message]: " + message);
     } else {
-        console.log("[Error]");
+        console.log("[Error]: args: ");
+        console.log(arguments);
     }
-    callback.apply(null, [err].concat(callback_args));
+    if (callback) {
+        callback.apply(null, [err].concat(callback_args));
+    }
 }
 
 exports.setDatabase = function(database) {

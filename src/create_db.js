@@ -17,16 +17,16 @@ module.exports = {
             tables_dropped++;
         }
 
+        function dropTablesCallback(err, data) {
+            logTableDropIncrementCount(err);
+            ifAllTablesDroppedCreateFilesTable.call(this);
+        }
+
         function ifAllTablesDroppedCreateFilesTable() {
             if (tables_dropped === num_tables) {
                 console.log("Finished dropping tables");
                 this.createFilesTable(callback);
             }
-        }
-
-        function dropTablesCallback(err, data) {
-            logTableDropIncrementCount(err);
-            ifAllTablesDroppedCreateFilesTable.call(this);
         }
 
         for (var i = 0; i < num_tables; i++) {
@@ -103,15 +103,22 @@ module.exports = {
         function log(err) {
             if (err) { throw err; }
             console.log("Table 'move' created");
-            callback();
+            if (callback) {
+                callback();
+            }
         }
 
         db.run(sql_statement, log);
 
+    },
+
+    createNewDatabase: function(db, callback) {
+        module.exports.setDatabase(db);
+        var table_list = ['files', 'session', 'player', 'move'];
+        module.exports.dropPreviouslyCreatedTables(table_list, callback);
     }
 };
 
 if (require.main === module) {
-    var table_list = ['files', 'session', 'player', 'move'];
-    exports.dropPreviouslyCreatedTables(table_list);
+    module.exports.createNewDatabase(db);
 }

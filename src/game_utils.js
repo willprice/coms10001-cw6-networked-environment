@@ -2,6 +2,7 @@
  * @typedef {{Taxi: int, Bus: int, Underground: int, DoubleMove: int, SecretMove: int}} tickets
  */
 
+var print = require('./output');
 
 module.exports = {
     /**
@@ -72,7 +73,11 @@ module.exports = {
 		return {
 			session_id: id,
 			name: name,
-			files_id: files_id	
+			files_id: files_id
 		};
-	}
+	},
+
+    print_session: function(session_db_row) {
+        output
+    }
 };
