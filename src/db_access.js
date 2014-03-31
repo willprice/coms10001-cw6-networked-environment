@@ -132,10 +132,10 @@ exports.getPlayerIds = function (session_id, callback) {
  * @param {function(err, location)} callback
  */
 exports.getPlayerLocation = function (player_id, callback) {
-    var sql_statement = "SELECT location FROM players WHERE player_id = ?";
+    var sql_statement = "SELECT location FROM player WHERE player_id = ?";
 
     db.get(sql_statement, [player_id], function (err, row) {
-        logAndRunCallback(err, "got player location properly!", callback, [row]);
+        logAndRunCallback(err, "got player location properly!", callback, [row.location]);
     });
 };
 

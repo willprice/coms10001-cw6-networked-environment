@@ -120,6 +120,26 @@ module.exports = {
 				test.done();
 			});	
 		}
+	},
+
+	setPlayerLocation: function(test) {
+		var start_location = 1;
+		var new_location = 2;
+
+		var tickets = game_utils.create_tickets(1, 2, 3, 4, 5);
+		var player = game_utils.create_player(1, 1, "D", start_location, tickets);
+
+		db_access.addPlayerObject(player, function(err, id) {
+			db_access.setPlayerLocation(player.id, new_location, getAndTestPlayerLocation);	
+		});
+
+		function getAndTestPlayerLocation(err) {
+			db_access.getPlayerLocation(player.id, function(err, actual_location) {
+				test.equal(actual_location, new_location);
+				test.done();
+			});
+		}
+
 	}
 };
 
