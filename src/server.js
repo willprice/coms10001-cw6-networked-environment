@@ -75,7 +75,7 @@ var db_access = require('./db_access');
 // `error` and `success` both contain codes that are passed between
 // client and server.
 var errors = require('./error');
-var successes = require('./success');
+var successes = require('./success')
 
 
 
@@ -227,6 +227,7 @@ function onJoin(client, args)
     server_state.setState(server_state.RUNNING);
 
     var player_ids = game_state.getPlayerIds().join(":");
+    if (debug) console.log('Player ids: ' + player_ids);
     sendResponseToValidRequest(client, successes.join_succeeded, player_ids);
 }
 

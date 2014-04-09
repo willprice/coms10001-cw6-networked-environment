@@ -10,7 +10,7 @@ module.exports = {
     setUp: function(callback) {
         var db = new sqlite3.Database(':memory:');
         create_db.createNewDatabase(db, callback);
-        //db_access.setDatabase(db);
+        db_access.setDatabase(db);
     },
 
     initialiseGame: function() {

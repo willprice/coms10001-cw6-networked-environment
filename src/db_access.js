@@ -52,12 +52,10 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
         underground_tickets, double_move_tickets, black_tickets, session_id],
         function(err) {
             var args;
-            if (err) {
-                args = [err, "player added properly!", callback];
-            } else {
-                args = [err, "player added properly!", callback, [this.lastID]];
+            if (!err) {
+                args = [this.lastID];
             }
-            logAndRunCallback.apply(null, args);
+            logAndRunCallback.call(null, err, "player added properly!", callback, args);
         }
     );
 };
@@ -77,12 +75,10 @@ exports.addSession = function (session_name, files_id, callback) {
     db.run(sql_statement, [null, session_name, files_id],
     function(err) {
         var args;
-        if (err) {
-            args = [err, "session added properly!", callback];
-        } else {
-            args = [err, "session added properly!", callback, [this.lastID]];
+        if (!err) {
+            args = [this.lastID];
         }
-        logAndRunCallback.apply(null, args);
+        logAndRunCallback.call(null, err, "session added properly!", callback, args);
     });
 };
 

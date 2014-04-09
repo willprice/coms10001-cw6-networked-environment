@@ -153,6 +153,3 @@ function dbCallback(err, data)
   var data_lines = data.split("\n");
   console.log("Extracted File has " + data_lines.length + " lines");
 }
-
-// we now query into the database using one of the functions
-// that is written in the db_access module
