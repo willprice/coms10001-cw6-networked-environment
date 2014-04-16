@@ -5,7 +5,6 @@ var output = require('../src/output');
 var sqlite3 = require('sqlite3');
 
 
-
 module.exports = {
     setUp: function(callback) {
         var db = new sqlite3.Database(':memory:');

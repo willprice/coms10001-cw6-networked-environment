@@ -40,7 +40,6 @@ var debug = true;
 // that are triggered when an event is fired 
 var ServerState = require('./server_state');
 
-// Creating a new GameState object
 var server_state = new ServerState();
 
 // The following lines are where we attach listeners to the

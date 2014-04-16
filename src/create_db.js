@@ -34,7 +34,7 @@ module.exports = {
         }
     },
 
-  createFilesTable: function(callback)
+    createFilesTable: function(callback)
     {
         var sql_stmt = "CREATE TABLE files (" +
             "files_id INTEGER PRIMARY KEY, " +

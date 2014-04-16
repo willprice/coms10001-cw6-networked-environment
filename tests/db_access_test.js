@@ -2,9 +2,9 @@
 
 var sqlite3 = require("sqlite3");
 
-var db_access = require('./../src/db_access');
-var create_db = require('./../src/create_db');
-var game_utils = require('./../src/game_utils');
+var db_access = require('../src/db_access');
+var create_db = require('../src/create_db');
+var game_utils = require('../src/game_utils');
 
 var db = new sqlite3.Database(":memory:");
 
