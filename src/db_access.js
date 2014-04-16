@@ -5,6 +5,7 @@ var sql = require("sqlite3");
 var db = new sql.Database("test.db");
 
 
+var db_access = {};
 /**
  * @param {int} player_id
  * @param {int} previous_location
@@ -12,12 +13,12 @@ var db = new sql.Database("test.db");
  * @param {string} ticket
  * @param {function(err)} callback
  */
-exports.addMoveObject = function(move, callback) {
-   exports.addMove(move.player_id, move.start_location, move.end_location,
+db_access.addMoveObject = function(move, callback) {
+   db_access.addMove(move.player_id, move.start_location, move.end_location,
    move.ticket_type, callback);
 };
 
-exports.addMove = function (player_id, previous_location, target_location, ticket, callback) {
+db_access.addMove = function (player_id, previous_location, target_location, ticket, callback) {
     var sql_statement = "INSERT INTO move VALUES (?, ?, ?, ?, ?)";
 
     db.run(sql_statement, [null, previous_location, target_location, ticket, player_id],
@@ -27,8 +28,8 @@ exports.addMove = function (player_id, previous_location, target_location, ticke
     );
 };
 
-exports.addPlayerObject = function(player, callback) {
-    exports.addPlayer(player.session_id, player.type,
+db_access.addPlayerObject = function(player, callback) {
+    db_access.addPlayer(player.session_id, player.type,
         player.location, player.tickets, callback);
 };
 
@@ -39,7 +40,7 @@ exports.addPlayerObject = function(player, callback) {
  * @param {tickets} tickets
  * @param {function(err, player_id)} callback
  */
-exports.addPlayer = function (session_id, player_type, player_location, tickets, callback) {
+db_access.addPlayer = function (session_id, player_type, player_location, tickets, callback) {
     var taxi_tickets = tickets.Taxi;
     var bus_tickets = tickets.Bus;
     var underground_tickets = tickets.Underground;
@@ -60,8 +61,8 @@ exports.addPlayer = function (session_id, player_type, player_location, tickets,
     );
 };
 
-exports.addSessionObject = function(session, callback) {
-    exports.addSession(session.name, session.files_id, callback);
+db_access.addSessionObject = function(session, callback) {
+    db_access.addSession(session.name, session.files_id, callback);
 };
 
 /**
@@ -69,7 +70,7 @@ exports.addSessionObject = function(session, callback) {
  * @param {int} files_id
  * @param {function(err, session_id)} callback
  */
-exports.addSession = function (session_name, files_id, callback) {
+db_access.addSession = function (session_name, files_id, callback) {
     var sql_statement = "INSERT INTO session VALUES (?, ?, ?)";
 
     db.run(sql_statement, [null, session_name, files_id],
@@ -88,7 +89,7 @@ exports.addSession = function (session_name, files_id, callback) {
  * @param {string} type
  * @param {function(err, data)} callback
  */
-exports.getFile = function (files_id, type, callback) {
+db_access.getFile = function (files_id, type, callback) {
     db.get("SELECT " + type + " FROM files WHERE files_id = ?", [files_id], function (err, row) {
         if (err) {
             return callback(err);
@@ -102,7 +103,7 @@ exports.getFile = function (files_id, type, callback) {
  * @param {int} player_id
  * @param {function(err, db_rows)} callback
  */
-exports.getMoves = function (player_id, callback) {
+db_access.getMoves = function (player_id, callback) {
     var sql_statement = "SELECT * FROM move WHERE player_id = ?";
 
     db.all(sql_statement, [player_id], function (err, rows) {
@@ -115,7 +116,7 @@ exports.getMoves = function (player_id, callback) {
  * @param {int} player_id
  * @param {function(err, db_row)} callback
  */
-exports.getPlayer = function (player_id, callback) {
+db_access.getPlayer = function (player_id, callback) {
     var sql_statement = "SELECT * FROM player WHERE player_id = ?";
 
     db.get(sql_statement, [player_id], function (err, row) {
@@ -127,7 +128,7 @@ exports.getPlayer = function (player_id, callback) {
  * @param {int} session_id
  * @param {function(err, db_rows) } callback
  */
-exports.getPlayerIds = function (session_id, callback) {
+db_access.getPlayerIds = function (session_id, callback) {
     var sql_statement = "SELECT player_id FROM player WHERE session_id = ?";
 
     db.all(sql_statement, [session_id], function (err, rows) {
@@ -139,7 +140,7 @@ exports.getPlayerIds = function (session_id, callback) {
  * @param {int} player_id
  * @param {function(err, location)} callback
  */
-exports.getPlayerLocation = function (player_id, callback) {
+db_access.getPlayerLocation = function (player_id, callback) {
     var sql_statement = "SELECT location FROM player WHERE player_id = ?";
 
     db.get(sql_statement, [player_id], function (err, row) {
@@ -151,7 +152,7 @@ exports.getPlayerLocation = function (player_id, callback) {
  * @param {int} session_id
  * @param {function(err, db_row)} callback
  */
-exports.getSession = function (session_id, callback) {
+db_access.getSession = function (session_id, callback) {
     var sql_statement = "SELECT * FROM session WHERE session_id = ?";
 
     db.get(sql_statement, [session_id], function (err, db_row) {
@@ -164,7 +165,7 @@ exports.getSession = function (session_id, callback) {
  * @param {int} new_location
  * @param {function(err)} callback
  */
-exports.setPlayerLocation = function (player_id, new_location, callback) {
+db_access.setPlayerLocation = function (player_id, new_location, callback) {
     var sql_statement = "UPDATE player SET location = ? WHERE player_id = ?";
 
     db.run(sql_statement, [new_location, player_id], function (err) {
@@ -184,6 +185,8 @@ function logAndRunCallback(err, message, callback, callback_args) {
     }
 }
 
-exports.setDatabase = function(database) {
+db_access.setDatabase = function(database) {
     db = database;
 };
+
+module.exports = db_access;
