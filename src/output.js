@@ -1,5 +1,4 @@
-module.exports = {
-
+var output = {
     print: function(object, repetitions)
     {
         var message;
@@ -15,13 +14,14 @@ module.exports = {
         process.stdout.write('\n');
     },
 
-    printHeader: function (title) {
+    printHeader: function (title)
+    {
         var separator_length = title.length + 4;
 
-        that.print("#", separator_length);
-        that.print("# " + title + " #");
-        that.print("#", separator_length);
+        output.print("#", separator_length);
+        output.print("# " + title + " #");
+        output.print("#", separator_length);
     }
 };
 
-var that = module.exports;
+module.exports = output;
