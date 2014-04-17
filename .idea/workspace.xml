@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77b8666f-5762-4c33-a43a-c0332223ba43" name="Default" comment="Move the non-nodeunit test out of the tests/ dir&#10;&#10;* Also remove error.js (missing from last commit)">
       <change type="DELETED" beforePath="$PROJECT_DIR$/src/error.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test.db" afterPath="" />
       <change type="MOVED" beforePath="$PROJECT_DIR$/tests/initialise_game.js" afterPath="$PROJECT_DIR$/initialise_game.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Coursework6-Networked-Environment.iml" afterPath="$PROJECT_DIR$/.idea/Coursework6-Networked-Environment.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/will.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/will.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Coursework6-Networked-Environment.iws" />
@@ -555,7 +552,11 @@
       <created>1397730710617</created>
       <updated>1397730710617</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Remove error.js">
+      <created>1397732991669</created>
+      <updated>1397732991669</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -585,6 +586,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32882884" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22054224" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944345" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32882884" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45212767" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="JsTestDriver Server" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45212767" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -594,7 +596,6 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22201139" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32882884" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -662,7 +663,8 @@
     <MESSAGE value="Refactor and fix some bugs in server.js&#10;&#10;* onWinningPlayer wasn't actually getting the winning player id,&#10;  it was accidentally sending the function (omitted parentheses)&#10;* sendErrorResponseToValidResponse wasn't being called correctly&#10;  in onMove, this was fixed&#10;* Refactored out some of the server set up into separate functions" />
     <MESSAGE value="Add debug toggle to server_state.js" />
     <MESSAGE value="Rename errors/successes&#10;&#10;* Also added a few error codes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rename errors/successes&#10;&#10;* Also added a few error codes" />
+    <MESSAGE value="Remove error.js" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove error.js" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

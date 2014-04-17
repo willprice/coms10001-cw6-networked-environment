@@ -1,7 +1,7 @@
-var create_db = require('../src/create_db');
-var db_access = require('../src/db_access');
-var game_utils = require('../src/game_utils');
-var output = require('../src/output');
+var create_db = require('src/create_db');
+var db_access = require('src/db_access');
+var game_utils = require('src/game_utils');
+var output = require('src/output');
 var sqlite3 = require('sqlite3');
 
 
