@@ -10,7 +10,6 @@
 
 "use strict";
 
-
 // Initialising the server
 // -----------------------
 
@@ -35,23 +34,7 @@ var debug = true;
 var ServerState = require('./server_state');
 var server_state = new ServerState();
 
-// The following lines are where we attach listeners to the
-// `ServerState` class. For each of the functions, t
-// he first argument is the name of the
-// event we are listening for, the second is the name of the
-// function that will be triggered when that event is emitted
-// by the `ServerState`
-server_state.on('invalid_request', onInvalid);
-server_state.on('initialise', onInitialise);
-server_state.on('get_file', onGet);
-server_state.on('join', onJoin);
-server_state.on('move', onMove);
-server_state.on('next_player', onNextPlayer);
-server_state.on('game_over', onGameOver);
-server_state.on('winning_player', onWinningPlayer);
-server_state.on('reset', onReset);
-server_state.on('error', onError);
-server_state.on('send_response', sendResponse);
+
 
 
 // The following module provides a set of helper functions that
@@ -66,11 +49,33 @@ var db_access = require('./db_access');
 
 // `error` and `success` both contain codes that are passed between
 // client and server.
-var errors = require('./error');
-var successes = require('./success');
+var errors = require('./errors');
+var successes = require('./successes');
 
+
+var set_up_listeners = function () {
+    // The following lines are where we attach listeners to the
+    // `ServerState` class. For each of the functions, t
+    // he first argument is the name of the
+    // event we are listening for, the second is the name of the
+    // function that will be triggered when that event is emitted
+    // by the `ServerState`
+    server_state.on('invalid_request', onInvalid);
+    server_state.on('initialise', onInitialise);
+    server_state.on('get_file', onGet);
+    server_state.on('join', onJoin);
+    server_state.on('move', onMove);
+    server_state.on('next_player', onNextPlayer);
+    server_state.on('game_over', onGameOver);
+    server_state.on('winning_player', onWinningPlayer);
+    server_state.on('reset', onReset);
+    server_state.on('error', onError);
+    server_state.on('send_response', sendResponse);
+};
 
 var run_server = function() {
+    set_up_listeners();
+
     // Here we set up the server and wait for incoming connections
     // The parameter passed into `net.createServer` is a callback function
     // this function is triggered every time a client joins the server
@@ -122,7 +127,7 @@ var connect = function (client) {
 var onWinningPlayer = function (client)
 {
 	if (game_state.isGameOver()) {
-        sendResponseToValidRequest(client, successes.game_is_over, game_state.getWinningPlayer);
+        sendResponseToValidRequest(client, successes.game_is_over, game_state.getWinningPlayer());
     } else {
         var err = {code: errors.gameNotOver, message: "No winning player as game is not over" };
         sendErrorResponseToValidRequest(client, err);
@@ -183,11 +188,11 @@ var onNextPlayer = function (client)
 //
 // If the `game_state.movePlayer(id,target_id,ticket)` function returns false this must be communicated 
 // to the client
-var onMove = function (client, args)
+var onMove = function (client, move)
 {
-    var id = args.player_id;
-    var target = args.target_id;
-    var ticket = args.ticket_type;
+    var id = parseInt(move.player_id, 10);
+    var target = parseInt(move.target_id, 10);
+    var ticket = move.ticket_type;
 
 	var success = game_state.movePlayer(id, target, ticket);
 
@@ -196,8 +201,9 @@ var onMove = function (client, args)
         //db_access.addMove(id, prev, target, ticket);
         sendResponseToValidRequest(client, successes.move);
     } else {
-        if (debug) console.log("Move: " + JSON.stringify(args) + ", was not performed");
-        sendErrorResponseToValidRequest(client, errors.invalidMove);
+        if (debug) console.log("[Move]: " + JSON.stringify(move) + ", was not performed");
+        var err = { code: errors.invalidMove, message: "Invalid move" };
+        sendErrorResponseToValidRequest(client, err );
     }
 };
 
@@ -338,7 +344,8 @@ var onInvalid = function (client, err)
  * @param err: {code, message}
  */
 var sendErrorResponseToValidRequest = function (client, err) {
-    sendResponse(client, 1, err.code, err.message);
+    console.log("[Error response to valid request]: " + err.message);
+    sendResponse(client, 1, err.code);
 };
 
 var onError = function (client, err)
