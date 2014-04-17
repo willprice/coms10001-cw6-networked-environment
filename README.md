@@ -7,4 +7,4 @@ To generate the database with the necessary files entries run the following:
     
     $ node create_db
     
-    $ node file_insert ../src/map.jpg ../res/graph.txt ../res/pos.txt
+    $ node file_insert ../res/map.jpg ../res/graph.txt ../res/pos.txt
