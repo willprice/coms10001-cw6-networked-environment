@@ -1,7 +1,6 @@
 // Description of the Server File
 // ------------------------------
 
-
 // To understand this document, you will need to look at the documentation
 // for both the `GameState` object and the `ServerState` object as well as the protocol definition
 // 1. [GameState](../out/GameState.html)
@@ -12,21 +11,16 @@
 "use strict";
 
 
-
-
 // Initialising the server
 // -----------------------
 
-
-
-
 // Here we require the modules that will be needed for the
-// game. The game state is equivalent to the 
-// `GameState` object 
+// game. The game state is equivalent to the
+// `GameState` object
 // you have written for Coursework 5. It allows incoming requests
 // to be checked for validity with respect to the game rules.
 // For example, it will check if a certain move is valid
-var GameState   = require('./game_state');
+var GameState = require('./game_state');
 // this creates a new GameState Object
 var game_state = new GameState();
 var debug = true;
@@ -37,9 +31,8 @@ var debug = true;
 // sort of request it is. It checks its state to find out
 // if that request is valid and if it is, it emits a corresponding event.
 // We attach event listeners to this class which are functions
-// that are triggered when an event is fired 
+// that are triggered when an event is fired
 var ServerState = require('./server_state');
-
 var server_state = new ServerState();
 
 // The following lines are where we attach listeners to the
@@ -74,19 +67,18 @@ var db_access = require('./db_access');
 // `error` and `success` both contain codes that are passed between
 // client and server.
 var errors = require('./error');
-var successes = require('./success')
+var successes = require('./success');
 
 
-
-
-// Here we set up the server and wait for incoming connections
-// The parameter passed into `net.createServer` is a callback function
-// this function is triggered every time a client joins the server
-var port = 8124;
-var net = require('net');
-var server = net.createServer(connect);
-server.listen(port);
-
+var run_server = function() {
+    // Here we set up the server and wait for incoming connections
+    // The parameter passed into `net.createServer` is a callback function
+    // this function is triggered every time a client joins the server
+    var port = 8124;
+    var net = require('net');
+    var server = net.createServer(connect);
+    server.listen(port);
+};
 
 
 // This is the callback function that is triggered every time a new client
@@ -97,13 +89,13 @@ server.listen(port);
 // the client object and the text that has come in as the request to the
 // `ServerState` object. The `ServerState` will now process the 
 // request 
-function connect(client) {
+var connect = function (client) {
 	client.setEncoding("utf8");
 	client.name = client.remoteAddress + ":"+ client.remotePort;
 	client.on('data', receive);
 	console.log("[Message]: Hello Client " + client.name);
 	function receive(request) { server_state.processRequest(client, request); }
-}
+};
 
 
 
@@ -127,7 +119,7 @@ function connect(client) {
 // If it has, the winning player id must be retrieved
 // from the `GameState` using the `game_state.getWinningPlayer()` function.
 // This is the written to the client
-function onWinningPlayer(client)
+var onWinningPlayer = function (client)
 {
 	if (game_state.isGameOver()) {
         sendResponseToValidRequest(client, successes.game_is_over, game_state.getWinningPlayer);
@@ -135,18 +127,18 @@ function onWinningPlayer(client)
         var err = {code: errors.gameNotOver, message: "No winning player as game is not over" };
         sendErrorResponseToValidRequest(client, err);
     }
-}
+};
 
 // This function is triggered when a `'reset'` event is emitted by the `ServerState`.
 // This function needs to reset both the `GameState` using the `game_state.reset()` function
 // and the `ServerState` using the `server_state.reset()` function.
 // If this has been done OK, write it to the client
-function onReset(client)
+var onReset = function (client)
 {
 	game_state.reset();
     server_state.reset();
     sendResponseToValidRequest(client, successes.reset);
-}
+};
 
 
 // This function is triggered when a `'game_over'` event is emitted by the
@@ -154,7 +146,7 @@ function onReset(client)
 // to see if the game has finished. The result of this
 // is then written to the client and the `ServerState` must be updated
 // using the `server_state.setState(state)` function
-function onGameOver(client)
+var onGameOver = function (client)
 {
     if (game_state.isGameOver()) {
         server_state.setState(server_state.GAME_OVER);
@@ -163,13 +155,13 @@ function onGameOver(client)
         var err = {code: 0, message: "Game is not over"};
         sendErrorResponseToValidRequest(client, err);
     }
-}
+};
 
 
 // This function is triggered by a `'next_player'` event emitted by the `ServerState`
 // It must use the `GameState` function `game_state.getNextPlayer()` to find out 
 // who the next player is and write it to the client
-function onNextPlayer(client)
+var onNextPlayer = function (client)
 {
 	if (game_state.isGameOver()) {
         var err = {code: 0, message: "Game is over"};
@@ -177,7 +169,7 @@ function onNextPlayer(client)
     } else {
         sendResponseToValidRequest(client, successes.player_retrieved, game_state.getNextPlayer());
     }
-}
+};
 
 
 // This function is triggered by a `'move'` event emitted from the `ServerState`. 
@@ -191,11 +183,11 @@ function onNextPlayer(client)
 //
 // If the `game_state.movePlayer(id,target_id,ticket)` function returns false this must be communicated 
 // to the client
-function onMove(client, args)
+var onMove = function (client, args)
 {
-    var id = args.id;
-    var target = args.target;
-    var ticket = args.ticket;
+    var id = args.player_id;
+    var target = args.target_id;
+    var ticket = args.ticket_type;
 
 	var success = game_state.movePlayer(id, target, ticket);
 
@@ -204,9 +196,10 @@ function onMove(client, args)
         //db_access.addMove(id, prev, target, ticket);
         sendResponseToValidRequest(client, successes.move);
     } else {
+        if (debug) console.log("Move: " + JSON.stringify(args) + ", was not performed");
         sendErrorResponseToValidRequest(client, errors.invalidMove);
     }
-}
+};
 
 
 
@@ -220,15 +213,14 @@ function onMove(client, args)
 // state of the `GameState` using the function `game_state.startRunning()` and
 // set the state of the `ServerState` to be running as well using the
 // `server_state.setState(state)` function
-function onJoin(client, args)
+var onJoin = function (client, args)
 {
     game_state.startRunning();
     server_state.setState(server_state.RUNNING);
 
     var player_ids = game_state.getPlayerIds().join(":");
-    if (debug) console.log('Player ids: ' + player_ids);
     sendResponseToValidRequest(client, successes.join_succeeded, player_ids);
-}
+};
 
 
 
@@ -239,7 +231,7 @@ function onJoin(client, args)
 // function checks for the type of the file to get and then calls the necessary
 // functions to get the data. The data is then written to the client
 // depending on the type of data (text or binary)
-function onGet(client, args)
+var onGet = function (client, args)
 {
     if(args.item === "game")
     {
@@ -277,7 +269,7 @@ function onGet(client, args)
 			return;
 		});
 	}
-}
+};
 
 // This function is triggered when an `'initialise'` event is emitted by
 // the `ServerState`. This function must do a number of things:
@@ -289,7 +281,7 @@ function onGet(client, args)
 // 4. It adds all the players into the `GameState`
 // 5. Sets the state of the `ServerState` to `initialised`
 // 6. Writes the success of this process to the client
-function onInitialise(client, args)
+var onInitialise = function (client, args)
 {
 	console.log("[Message]: Initialising Game");
 
@@ -312,60 +304,58 @@ function onInitialise(client, args)
         sendResponse(client, 1, 1);
 		server_state.setState(server_state.INITIALISED);
 	});
-}
+};
 
 // formatCode is 1 if the request from client was formatted correctly, otherwise it is 0.
-function sendResponse(client, formatCode, returnCode) {
+var sendResponse = function (client, formatCode, returnCode, extra_args) {
     var response = formatCode + "," + returnCode;
-    var extra_args = [].slice.call(arguments, ':');
-    extra_args = extra_args.slice(3, extra_args.length);
 
-    for (var index = 0; index < extra_args.length; index++) {
-        response += "," + extra_args[index];
+    if (extra_args) {
+        for (var index = 0; index < extra_args.length; index++) {
+            response += "," + extra_args[index];
+        }
     }
     response += "\n";
-    if (debug) console.log("[Response_Debug]: " + response);
+    if (debug) console.log("[Response]: " + response);
     client.write(response);
-}
+};
 
 // This function is triggered when the `ServerState` gets an invalid
 // request. It simply writes the error to the client
-function sendResponseToInvalidRequest(client, err) {
-    sendResponse(client, 0, err.code, err.message);
-}
+var sendResponseToInvalidRequest = function (client, err) {
+    sendResponse(client, 0);
+    console.log("[Error]: code: " + err.code + ", message: " + err.message);
+};
 
-function onInvalid(client, err)
+var onInvalid = function (client, err)
 {
 	sendResponseToInvalidRequest(client, err);
-}
+};
 
 /**
  *
  * @param client
  * @param err: {code, message}
  */
-function sendErrorResponseToValidRequest(client, err) {
+var sendErrorResponseToValidRequest = function (client, err) {
     sendResponse(client, 1, err.code, err.message);
-}
+};
 
-function onError(client, err)
+var onError = function (client, err)
 {
     sendErrorResponseToValidRequest(client, err);
-}
+};
 
-function sendResponseToValidRequest(client, return_code) {
+var sendResponseToValidRequest = function (client, return_code) {
     if (arguments.length > 2) {
-        var args = toArray(arguments);
-        args.insert(1, 1);
+        var extra_args = toArray(arguments).slice(2);
     }
-    sendResponse(client, 1, return_code);
-}
+    sendResponse(client, 1, return_code, extra_args);
+};
 
 // Helper functions
-function toArray(args) {
+var toArray = function (args) {
     return [].slice.call(args, ':');
-}
-
-Array.prototype.insert = function (index, item) {
-    this.splice(index, 0, item);
 };
+
+if  (module === require.main) run_server();
