@@ -2,6 +2,7 @@
   <dictionary name="will">
     <words>
       <w>nodeunit</w>
+      <w>sinon</w>
       <w>sqlite</w>
     </words>
   </dictionary>
