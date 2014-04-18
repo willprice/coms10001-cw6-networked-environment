@@ -30,7 +30,7 @@ Player.prototype.addTicket = function(ticket)
 
 Player.prototype.getTicketNumber = function(ticket)
 {
-	return this.tickets[ticket];
+	return this.tickets[ticket.replace("\r", "")];
 };
 
 Player.prototype.moveTo = function(target, ticket)
