@@ -181,6 +181,7 @@ function logAndRunCallback(err, message, callback, callback_args) {
         console.log(arguments);
     }
     if (callback) {
+        console.log("Running callback!");
         callback.apply(null, [err].concat(callback_args));
     }
 }
@@ -189,4 +190,5 @@ db_access.setDatabase = function(database) {
     db = database;
 };
 
+db.run("PRAGMA foreign_key_check;");
 module.exports = db_access;

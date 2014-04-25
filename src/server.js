@@ -194,12 +194,17 @@ var onMove = function (client, move)
     var target = parseInt(move.target_id, 10);
     var ticket = move.ticket_type;
 
+    var prev = game_state.getPlayer(move.player_id).location_id;
 	var success = game_state.movePlayer(id, target, ticket);
 
     if (success) {
         // TODO: Add move to database
-        //db_access.addMove(id, prev, target, ticket);
-        sendResponseToValidRequest(client, successes.move);
+        db_access.addMove(id, prev, target, ticket, function(err) {
+            if (err) {
+                console.log("ERRR: " + err);
+            }
+            sendResponseToValidRequest(client, successes.move);
+        });
     } else {
         if (debug) console.log("[Move]: " + JSON.stringify(move) + ", was not performed");
         var err = { code: errors.invalidMove, message: "Invalid move" };
@@ -354,8 +359,9 @@ var onError = function (client, err)
 };
 
 var sendResponseToValidRequest = function (client, return_code) {
+    var extra_args;
     if (arguments.length > 2) {
-        var extra_args = toArray(arguments).slice(2);
+        extra_args = toArray(arguments).slice(2);
     }
     sendResponse(client, 1, return_code, extra_args);
 };

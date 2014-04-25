@@ -196,7 +196,7 @@ GameState.prototype.getPlayer = function(id)
 {
 	for(var i = 0; i < this.players.length; i++)
 	{
-		if(id === this.players[i].id)
+		if(id == this.players[i].id)
 		{
 			return this.players[i];
 		}
